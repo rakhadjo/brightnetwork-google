@@ -3,6 +3,7 @@
 from .video_library import VideoLibrary
 import random
 
+
 class VideoPlayer:
     """A class used to represent a Video Player."""
 
@@ -46,17 +47,19 @@ class VideoPlayer:
         else:
             self._paused = False
             if self._playing:
-                print(f"Stopping video: {self._video_library.get_video(self._playing).title}")
+                print(
+                    f"Stopping video: {self._video_library.get_video(self._playing).title}")
             self._playing = video_id
-            print(f"Playing video: {self._video_library.get_video(self._playing).title}")
-
+            print(
+                f"Playing video: {self._video_library.get_video(self._playing).title}")
 
     def stop_video(self):
         """Stops the current video."""
         if not self._playing:
             print("Cannot stop video: No video is currently playing")
         else:
-            print(f"Stopping video: {self._video_library.get_video(self._playing).title}")
+            print(
+                f"Stopping video: {self._video_library.get_video(self._playing).title}")
             self._playing = None
 
     def play_random_video(self):
@@ -65,7 +68,6 @@ class VideoPlayer:
         videos = self._video_library.get_all_videos()
         video = random.choice(videos)
         self.play_video(video.video_id)
-        
 
     def pause_video(self):
         """Pauses the current video."""
@@ -74,10 +76,13 @@ class VideoPlayer:
             print("Cannot pause video: No video is currently playing")
         else:
             if (not self._paused):
-                print(f"Pausing video: {self._video_library.get_video(self._playing).title}")
+                print(
+                    f"Pausing video: {self._video_library.get_video(self._playing).title}")
                 self._paused = True
             else:
-                print(f"Video already paused: {self._video_library.get_video(self._playing).title}")
+                print(
+                    f"Video already paused: {self._video_library.get_video(self._playing).title}")
+
     def continue_video(self):
         """Resumes playing the current video."""
 
@@ -87,7 +92,8 @@ class VideoPlayer:
             if not self._paused:
                 print("Cannot continue video: Video is not paused")
             else:
-                print(f"Continuing video: {self._video_library.get_video(self._playing).title}")
+                print(
+                    f"Continuing video: {self._video_library.get_video(self._playing).title}")
                 self._paused = False
 
     def show_playing(self):
