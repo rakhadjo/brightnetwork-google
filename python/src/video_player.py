@@ -253,7 +253,27 @@ class VideoPlayer:
         Args:
             search_term: The query to be used in search.
         """
-        print("search_videos needs implementation")
+        videos = self._video_library.get_all_videos()
+        out = []
+        for video in videos:
+            if search_term in video.title:
+                out.append(video)
+        if not out:
+            print(f"No search results for {search_term}")
+        else:
+            print(f"Here are the results for {search_term}:")
+            for i in range(len(out)):
+                print(f"  {i}) {self.parse_video(out[i])}")
+            inp = input("Would you like to play any of the above? If yes, specify the number of the video.\nIf your answer is not a valid number, we will assume it's a no.")
+            try: 
+                num = int(inp)
+                if (num in range(0, len(out))):
+                    self.play_video(out[num - 1])
+            except:
+                pass
+
+
+        
 
     def search_videos_tag(self, video_tag):
         """Display all videos whose tags contains the provided tag.
@@ -279,3 +299,15 @@ class VideoPlayer:
             video_id: The video_id to be allowed again.
         """
         print("allow_video needs implementation")
+
+    def parse_video(self, v) -> str:
+        tags_out = ""
+        if (not len(v.tags)):
+            tags_out = "[]"
+        else:
+            tags_out = "["
+            for t in v.tags:
+                tags_out += t + " "
+            tags_out = tags_out[:-1]
+            tags_out += "]"
+        return(f"  {v.title} ({v.video_id}) {tags_out}")
