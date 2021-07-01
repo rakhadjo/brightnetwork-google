@@ -10,13 +10,20 @@ class Playlist:
         self._name = name
         self._videos = {}
 
-    @property
+    def set_name(self, name: str):
+        self._name = name
+
     def name(self) -> str:
         return self._name
 
-    @property
     def videos(self) -> Sequence[Video]:
         return self._videos
 
     def add(self, video: Video):
-        self._videos[video.video_id] = Video
+        self._videos[video.video_id] = video
+
+    def remove(self, video):
+        del self._videos[video.video_id]
+
+    def clear(self):
+        self._videos = {}
