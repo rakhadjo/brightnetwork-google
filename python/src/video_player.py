@@ -1,6 +1,7 @@
 """A video player class."""
 
 from .video_library import VideoLibrary
+from .video_playlist import Playlist
 import random
 
 
@@ -11,6 +12,7 @@ class VideoPlayer:
         self._video_library = VideoLibrary()
         self._paused = False
         self._playing = None
+        self._playlists = {}
 
     def number_of_videos(self):
         num_videos = len(self._video_library.get_all_videos())
@@ -123,7 +125,13 @@ class VideoPlayer:
         Args:
             playlist_name: The playlist name.
         """
-        print("create_playlist needs implementation")
+        if not self._playlists.get(playlist_name.lower(), None):
+            self._playlists[playlist_name.lower()] = Playlist(playlist_name)
+            print(f"Successfully created new playlist: {playlist_name}")
+        else:
+            print("Cannot create playlist: A playlist with the same name already exists")
+        
+        
 
     def add_to_playlist(self, playlist_name, video_id):
         """Adds a video to a playlist with a given name.
@@ -132,12 +140,32 @@ class VideoPlayer:
             playlist_name: The playlist name.
             video_id: The video_id to be added.
         """
-        print("add_to_playlist needs implementation")
+        video = self._video_library.get_video(video_id)
+        
+        playlist = self._playlists.get(playlist_name.lower())
+
+        if playlist and video:
+            if not video_id in playlist.videos:
+                playlist.add(video)
+                print(f"Added video to {playlist_name}: {video.title}")
+            else:
+                print(f"Cannot add video to {playlist_name}: Video already added")
+
+        if not playlist:
+            print(f"Cannot add video to {playlist_name}: Playlist does not exist")
+
+        elif not video:
+            print(f"Cannot add video to {playlist_name}: Video does not exist")
+
 
     def show_all_playlists(self):
         """Display all playlists."""
-
-        print("show_all_playlists needs implementation")
+        if not len(self._playlists):
+            print("No playlists exist yet")
+        else:
+            print("Showing all playlists:")
+            for playlist in sorted(self._playlists.keys()):
+                print(f"{self._playlists[playlist].name}")
 
     def show_playlist(self, playlist_name):
         """Display all videos in a playlist with a given name.
@@ -145,7 +173,30 @@ class VideoPlayer:
         Args:
             playlist_name: The playlist name.
         """
-        print("show_playlist needs implementation")
+        playlist = self._playlists.get(playlist_name.lower())
+        if not playlist:
+            print(f"Cannot show playlist {playlist_name}: Playlist does not exist")
+        else:
+            print(f"Showing playlist: {playlist_name}")
+            if not (len(playlist.videos)):
+                print(f"No videos here yet")
+            else:
+                videos = playlist.videos
+                for vi in videos:
+                    v = videos[vi]
+                    tgs = v.tags
+                    tags_out = ""
+                    if (not tgs):
+                        tags_out = "[]"
+                    else:
+                        tags_out = "["
+                        for t in v.tags:
+                            tags_out += t + " "
+                        tags_out = tags_out[:-1]
+                        tags_out += "]"
+                    print(f"  {v.title} ({v.video_id}) {tags_out}")
+
+
 
     def remove_from_playlist(self, playlist_name, video_id):
         """Removes a video to a playlist with a given name.
@@ -154,7 +205,21 @@ class VideoPlayer:
             playlist_name: The playlist name.
             video_id: The video_id to be removed.
         """
-        print("remove_from_playlist needs implementation")
+        playlist = self._playlists.get(playlist_name)
+        video = self._video_library.get_video(video_id)
+
+        if not video and playlist:
+            print(f"Cannot remove video from {playlist_name}: Video does not exist")
+
+        elif not playlist and video:
+            print(f"Cannot remove video from {playlist_name}: Playlist does not exist")
+
+        if video in playlist.videos:
+            print(f"Removed video from {playlist_name}: {video.name}")
+        
+        elif video and video not in playlist.videos:
+            print(f"Cannot remove video from {playlist_name}: Video is not in playlist")
+        
 
     def clear_playlist(self, playlist_name):
         """Removes all videos from a playlist with a given name.
@@ -162,7 +227,12 @@ class VideoPlayer:
         Args:
             playlist_name: The playlist name.
         """
-        print("clears_playlist needs implementation")
+        playlist = self._playlists.get(playlist_name)
+        if not playlist:
+            print(f"Cannot clear playlist {playlist_name}: Playlist does not exist")
+        else:
+            self._playlists.get(playlist_name).videos = {}
+            print(f"Successfully removed all videos from {playlist_name}")
 
     def delete_playlist(self, playlist_name):
         """Deletes a playlist with a given name.
@@ -170,7 +240,12 @@ class VideoPlayer:
         Args:
             playlist_name: The playlist name.
         """
-        print("deletes_playlist needs implementation")
+        playlist = self._playlists.get(playlist_name)
+        if not playlist:
+            print(f"Cannot delete playlist {playlist_name}: Playlist does not exist")
+        else:
+            self._playlists.pop(playlist_name)
+            print(f"Deleted playlist: {playlist_name}")
 
     def search_videos(self, search_term):
         """Display all the videos whose titles contain the search_term.
