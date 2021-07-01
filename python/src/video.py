@@ -14,6 +14,9 @@ class Video:
         # Turn the tags into a tuple here so it's unmodifiable,
         # in case the caller changes the 'video_tags' they passed to us
         self._tags = tuple(video_tags)
+    
+    def __len__(self):
+        return len(self._tags)
 
     @property
     def title(self) -> str:
@@ -29,3 +32,18 @@ class Video:
     def tags(self) -> Sequence[str]:
         """Returns the list of tags of a video."""
         return self._tags
+
+    def get_tags(self):
+        return self._tags
+
+    def parse_video(self):
+        tags_out = ""
+        if (not self._tags):
+            tags_out = "[]"
+        else:
+            tags_out = "["
+            for t in self._tags:
+                tags_out += t + " "
+            tags_out = tags_out[:-1]
+            tags_out += "]"
+        return(f"{self._title} ({self._video_id}) {tags_out}")
